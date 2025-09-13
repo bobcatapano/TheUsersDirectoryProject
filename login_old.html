@@ -1,0 +1,36 @@
+﻿<div class="container mt-5" style="max-width: 400px;">
+    <h3 class="text-center">Login</h3>
+    <form onsubmit="login(event)">
+        <div class="mb-3">
+            <label for="loginEmail" class="form-label">Email</label>
+            <input type="email" id="loginEmail" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="loginPassword" class="form-label">Password</label>
+            <input type="password" id="loginPassword" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+</div>
+
+<script>
+async function login(event) {
+    event.preventDefault();
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+    });
+
+    if (res.ok) {
+        const user = await res.json();
+        localStorage.setItem("user", JSON.stringify(user)); // store user info in localStorage
+        window.location.href = "index.html"; // redirect to main page
+    } else {
+        alert("Invalid email or password");
+    }
+}
+</script>

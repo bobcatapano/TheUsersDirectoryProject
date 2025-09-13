@@ -1,0 +1,75 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>User Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>User Dashboard</h1>
+            <button id="logoutBtn" class="btn btn-outline-danger">Logout</button>
+        </div>
+        <p class="lead">Welcome! This is a basic user page.</p>
+    </div>
+
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+         window.location.href = 'index.html';
+    });
+    </script>
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container py-5">
+
+    <h2>Welcome, <span id="displayName"></span></h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>User Dashboard</h1>
+        <button id="logoutBtn" class="btn btn-outline-danger">Logout</button>
+    </div>
+
+    <ul class="list-group mt-3">
+        <li class="list-group-item"><strong>Username:</strong> <span id="displayUsername"></span></li>
+        <li class="list-group-item"><strong>First Name:</strong> <span id="displayFirstName"></span></li>
+        <li class="list-group-item"><strong>Last Name:</strong> <span id="displayLastName"></span></li>
+        <li class="list-group-item"><strong>Email:</strong> <span id="displayEmail"></span></li>
+    </ul>
+
+
+    <script>
+        // Get stored user info
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+        if (!currentUser) {
+            // If no user is found, redirect to login
+            window.location.href = "login.html";
+        } else {
+            // Fill in the fields
+            document.getElementById("displayUsername").textContent = currentUser.userName || currentUser.UserName;
+            document.getElementById("displayFirstName").textContent = currentUser.firstName || currentUser.FirstName;
+            document.getElementById("displayLastName").textContent = currentUser.lastName || currentUser.LastName;
+            document.getElementById("displayEmail").textContent = currentUser.email || currentUser.Email;
+
+            // Optional: display full name in header
+            document.getElementById("displayName").textContent =
+                `${currentUser.firstName || currentUser.FirstName} ${currentUser.lastName || currentUser.LastName}`;
+        }
+    </script>
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+    </script>
+
+</body>
+</html> -->
+

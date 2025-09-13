@@ -1,152 +1,64 @@
-<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>User Directory</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
-    h1 { margin-bottom: 1rem; }
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ddd; padding: .6rem; }
-    th { text-align: left; background: #f3f3f3; }
-    .toolbar { margin-bottom: 1rem; }
-    button { cursor: pointer; padding: .5rem .8rem; border-radius: .4rem; border: 1px solid #ccc; background: #fff; }
-    button:hover { background: #f7f7f7; }
-    dialog { border: none; border-radius: .6rem; padding: 1rem 1.2rem; box-shadow: 0 10px 30px rgba(0,0,0,.15); }
-    form .row { display: grid; grid-template-columns: 140px 1fr; gap: .6rem; margin: .6rem 0; align-items: center; }
-    input { width: 100%; padding: .45rem .55rem; border: 1px solid #ccc; border-radius: .4rem; }
-    .actions { display: flex; gap: .6rem; justify-content: flex-end; margin-top: 1rem; }
-    .error { color: #b00020; margin-top: .5rem; }
-    .empty { color: #666; font-style: italic; padding: .6rem 0; }
-  </style>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-  <h1>User Accounts</h1>
+<body class="container py-5">
 
-  <div class="toolbar">
-    <button id="newBtn">New</button>
-  </div>
-
-  <div id="tableWrap">
-    <table id="userTable" hidden>
-      <thead>
-        <tr>
-          <th>First name</th>
-          <th>Last name</th>
-          <th>Email</th>
-        </tr>
-      </thead>
-      <tbody id="userTbody"></tbody>
-    </table>
-    <div id="emptyMsg" class="empty" hidden>No users yet. Click “New” to add one.</div>
-  </div>
-
-  <dialog id="newDialog">
-    <form method="dialog" id="newForm">
-      <h3>New User</h3>
-      <div class="row">
-        <label for="firstName">First name</label>
-        <input id="firstName" name="firstName" required />
-      </div>
-      <div class="row">
-        <label for="lastName">Last name</label>
-        <input id="lastName" name="lastName" required />
-      </div>
-      <div class="row">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" required />
-      </div>
-      <div class="error" id="formError" hidden></div>
-      <div class="actions">
-        <button type="button" id="cancelBtn">Cancel</button>
-        <button type="submit" id="saveBtn">Save</button>
-      </div>
+    <h2>Login</h2>
+    <form id="loginForm" class="mt-3">
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" id="userName" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" id="password" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+        <div id="loginError" class="text-danger mt-2" hidden></div>
     </form>
-  </dialog>
 
-  <script>
-    const apiBase = '/api/users';
-    const table = document.getElementById('userTable');
-    const tbody = document.getElementById('userTbody');
-    const emptyMsg = document.getElementById('emptyMsg');
-    const dlg = document.getElementById('newDialog');
-    const newBtn = document.getElementById('newBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const form = document.getElementById('newForm');
-    const err = document.getElementById('formError');
-
-    async function loadUsers() {
-      const res = await fetch(apiBase);
-      if (!res.ok) {
-        tbody.innerHTML = '';
-        table.hidden = true;
-        emptyMsg.hidden = false;
-        return;
-      }
-      const users = await res.json();
-      tbody.innerHTML = users.map(u => `
-        <tr>
-          <td>${escapeHtml(u.firstName)}</td>
-          <td>${escapeHtml(u.lastName)}</td>
-          <td>${escapeHtml(u.email)}</td>
-        </tr>
-      `).join('');
-
-      const has = users.length > 0;
-      table.hidden = !has;
-      emptyMsg.hidden = has;
-    }
-
-    function escapeHtml(s) {
-      return String(s ?? '').replace(/[&<>"']/g, m => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-      }[m]));
-    }
-
-    newBtn.addEventListener('click', () => {
-      form.reset();
-      err.hidden = true;
-      dlg.showModal();
-      document.getElementById('firstName').focus();
-    });
-
-    cancelBtn.addEventListener('click', () => dlg.close());
-
-    form.addEventListener('submit', async (e) => {
+    <script>
+    const apiBase = "/api";
+    console.log("Hello")
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      err.hidden = true;
+      const loginError = document.getElementById("loginError");
 
       const payload = {
-        firstName: form.firstName.value.trim(),
-        lastName:  form.lastName.value.trim(),
-        email:     form.email.value.trim(),
+        userName: document.getElementById("userName").value.trim(),
+        password: document.getElementById("password").value.trim()
       };
-
-      if (!payload.firstName || !payload.lastName || !payload.email) {
-        err.textContent = 'All fields are required.';
-        err.hidden = false;
-        return;
-      }
-
-      const res = await fetch(apiBase, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        console.log("Hello2")
+      const res = await fetch(`${apiBase}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-
-      if (!res.ok) {
-        const msg = await res.text();
-        err.textContent = msg || 'Failed to save user.';
-        err.hidden = false;
-        return;
+        console.log("Hello3")
+     if (!res.ok) {
+       loginError.textContent = "Invalid username or password.";
+       loginError.hidden = false;
+       return;
       }
+        console.log("Hello4")
+        const user = await res.json();
+        console.log("Hello5")
+        console.log("HERE:", user)
+        // Store user info in localStorage
+        localStorage.setItem("currentUser", JSON.stringify(user));
 
-      dlg.close();
-      await loadUsers();
+        // Redirect based on group
+        if ((user.userName || user.UserName) == "admin") {
+            console.log("YO")
+            window.location.href = "admin.html";
+        } else {
+            window.location.href = "user.html";
+       }
     });
-
-    loadUsers();
-  </script>
+    </script>
 </body>
 </html>
